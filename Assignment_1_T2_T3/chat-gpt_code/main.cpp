@@ -1,9 +1,4 @@
 #include "Polynomial.h"
-#include "Polynomial.hpp"
-
-
-
-
 
 void displayMenu() {
     cout << "Polynomial Operations Menu:\n";
