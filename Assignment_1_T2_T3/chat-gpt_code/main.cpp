@@ -1,80 +1,141 @@
 #include "Polynomial.h"
+#include "Polynomial.hpp"
 
-void runMenu();
 
-int main() {
-    runMenu();
-    return 0;
+
+
+
+void displayMenu() {
+    cout << "Polynomial Operations Menu:\n";
+    cout << "1. Add two polynomials\n";
+    cout << "2. Subtract two polynomials\n";
+    cout << "3. Multiply two polynomials\n";
+    cout << "4. Evaluate a polynomial at a point\n";
+    cout << "5. Display a polynomial\n";
+    cout << "6. Exit\n";
+    cout << "Please enter your choice: ";
 }
 
-void runMenu() {
+int main() {
     int choice;
+    Polynomial p1, p2, result;
+    vector<double> coefficients;
+    int degree;
+    double value;
+
+    // Menu loop
     do {
-        cout << "\nPolynomial Operations Menu:\n";
-        cout << "1. Add Polynomials\n";
-        cout << "2. Subtract Polynomials\n";
-        cout << "3. Multiply Polynomials\n";
-        cout << "4. Evaluate Polynomial\n";
-        cout << "5. Find Polynomial Degree\n";
-        cout << "6. Exit\n";
-        cout << "Enter your choice: ";
+        displayMenu();
         cin >> choice;
 
-        if (choice == 6) break;
-
-        cout << "Enter the degree of the polynomial: ";
-        int degree;
-        cin >> degree;
-
-        vector<double> coeffs1(degree + 1);
-        vector<double> coeffs2(degree + 1);
-
-        cout << "Enter coefficients for first polynomial (from constant term to highest degree): ";
-        for (int i = 0; i <= degree; ++i) {
-            cin >> coeffs1[i];
-        }
-
-        cout << "Enter coefficients for second polynomial (from constant term to highest degree): ";
-        for (int i = 0; i <= degree; ++i) {
-            cin >> coeffs2[i];
-        }
-
-        Polynomial p1(coeffs1);
-        Polynomial p2(coeffs2);
-
         switch (choice) {
-            case 1: {
-                Polynomial result = p1 + p2;
-                cout << "Result of addition: " << result << endl;
+            case 1: // Add two polynomials
+                cout << "Enter the degree of the first polynomial: ";
+                cin >> degree;
+                coefficients.resize(degree + 1);
+                cout << "Enter the coefficients of the first polynomial: ";
+                for (int i = 0; i <= degree; ++i) {
+                    cin >> coefficients[i];
+                }
+                p1 = Polynomial(coefficients);
+
+                cout << "Enter the degree of the second polynomial: ";
+                cin >> degree;
+                coefficients.resize(degree + 1);
+                cout << "Enter the coefficients of the second polynomial: ";
+                for (int i = 0; i <= degree; ++i) {
+                    cin >> coefficients[i];
+                }
+                p2 = Polynomial(coefficients);
+
+                result = p1 + p2;
+                cout << "The result of addition is: " << result << endl;
                 break;
-            }
-            case 2: {
-                Polynomial result = p1 - p2;
-                cout << "Result of subtraction: " << result << endl;
+
+            case 2: // Subtract two polynomials
+                cout << "Enter the degree of the first polynomial: ";
+                cin >> degree;
+                coefficients.resize(degree + 1);
+                cout << "Enter the coefficients of the first polynomial: ";
+                for (int i = 0; i <= degree; ++i) {
+                    cin >> coefficients[i];
+                }
+                p1 = Polynomial(coefficients);
+
+                cout << "Enter the degree of the second polynomial: ";
+                cin >> degree;
+                coefficients.resize(degree + 1);
+                cout << "Enter the coefficients of the second polynomial: ";
+                for (int i = 0; i <= degree; ++i) {
+                    cin >> coefficients[i];
+                }
+                p2 = Polynomial(coefficients);
+
+                result = p1 - p2;
+                cout << "The result of subtraction is: " << result << endl;
                 break;
-            }
-            case 3: {
-                Polynomial result = p1 * p2;
-                cout << "Result of multiplication: " << result << endl;
+
+            case 3: // Multiply two polynomials
+                cout << "Enter the degree of the first polynomial: ";
+                cin >> degree;
+                coefficients.resize(degree + 1);
+                cout << "Enter the coefficients of the first polynomial: ";
+                for (int i = 0; i <= degree; ++i) {
+                    cin >> coefficients[i];
+                }
+                p1 = Polynomial(coefficients);
+
+                cout << "Enter the degree of the second polynomial: ";
+                cin >> degree;
+                coefficients.resize(degree + 1);
+                cout << "Enter the coefficients of the second polynomial: ";
+                for (int i = 0; i <= degree; ++i) {
+                    cin >> coefficients[i];
+                }
+                p2 = Polynomial(coefficients);
+
+                result = p1 * p2;
+                cout << "The result of multiplication is: " << result << endl;
                 break;
-            }
-            case 4: {
-                cout << "Enter a value to evaluate the polynomial: ";
-                double x;
-                cin >> x;
-                double value = p1.evaluate(x);
-                cout << "Polynomial evaluated at " << x << " is " << value << endl;
+
+            case 4: // Evaluate polynomial at a point
+                cout << "Enter the degree of the polynomial: ";
+                cin >> degree;
+                coefficients.resize(degree + 1);
+                cout << "Enter the coefficients of the polynomial: ";
+                for (int i = 0; i <= degree; ++i) {
+                    cin >> coefficients[i];
+                }
+                p1 = Polynomial(coefficients);
+
+                cout << "Enter the value of x to evaluate the polynomial: ";
+                cin >> value;
+
+                cout << "The value of the polynomial at x = " << value << " is: " << p1.evaluate(value) << endl;
                 break;
-            }
-            case 5: {
-                cout << "Degree of the first polynomial: " << p1.degree() << endl;
-                cout << "Degree of the second polynomial: " << p2.degree() << endl;
+
+            case 5: // Display polynomial
+                cout << "Enter the degree of the polynomial: ";
+                cin >> degree;
+                coefficients.resize(degree + 1);
+                cout << "Enter the coefficients of the polynomial: ";
+                for (int i = 0; i <= degree; ++i) {
+                    cin >> coefficients[i];
+                }
+                p1 = Polynomial(coefficients);
+
+                cout << "The polynomial is: " << p1 << endl;
                 break;
-            }
+
+            case 6: // Exit
+                cout << "Exiting the program." << endl;
+                break;
+
             default:
-                cout << "Invalid choice. Please try again.\n";
+                cout << "Invalid choice. Please try again." << endl;
                 break;
         }
     } while (choice != 6);
-}
 
+    return 0;
+}
