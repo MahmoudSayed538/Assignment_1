@@ -1,10 +1,5 @@
 #pragma once
 #include <bits/stdc++.h>
-#include <cerrno>
-#include <iterator>
-#include <string>
-#include <sys/types.h>
-#include <vector>
 using namespace std;
 
 class Memory{
@@ -47,18 +42,19 @@ class Machine{
     Memory machineMemory;
     CPU processor;
     public:
-        bool run();
-        bool valid();
+        void valid(string instruction); // checks if the instruction is valid 
         void loadInstruction();// takes instructions from the user and load it to the memory after making sure it is a valid instruction.
         void process();
         void displayStatus();
 };
 
 class UI {
+    Machine myMachine;
+    string instruction;
     public:
-    UI(); // displays user class ALU{
-    public:
-        void checkInstruction(string& IR);
+         UI(); // displays menu.
+         bool valid(string instruction); // checks instruction.
+         void getInstruction(); // gets the instruction from the user after checking
 };
 
 
