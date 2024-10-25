@@ -5,17 +5,17 @@ using namespace std;
 
 class Memory{
     vector<string> registers;
-    vector<vector<string>> mainMemory;
+    vector<string> mainMemory;
     public:
     Memory()
     {
         registers.assign(16,"00");
-        mainMemory.assign(16,vector<string>(16,"00"));
+        mainMemory.assign(256,"00");
     }
     void setMemory(const int& address,const string& value);
-    void getMemory(const int& address);
+    string getMemory(const int& address);
     void setRegister(const int& address,const string& value);
-    void getRegister(const int& address);
+    string getRegister(const int& address);
 };
 
 class CU{
@@ -54,7 +54,7 @@ class UI {
     public:
          bool getFileOrInstruction();
          void displayMenu();
-         void isValid(string input,regex goodInput);
+         bool isValid(const string& input,regex goodInput);
          string inputFileName();
          string inputInstruction();
          char inputChoice();
