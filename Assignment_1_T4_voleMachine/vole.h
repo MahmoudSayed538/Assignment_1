@@ -1,5 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
+#include <string>
 using namespace std;
 
 class Memory{
@@ -42,19 +43,21 @@ class Machine{
     Memory machineMemory;
     CPU processor;
     public:
-        void valid(string instruction); // checks if the instruction is valid 
-        void loadInstruction();// takes instructions from the user and load it to the memory after making sure it is a valid instruction.
+        void loadInstruction(const string& instruction);// takes instructions from the user and load it to the memory after making sure it is a valid instruction.
         void process();
-        void displayStatus();
+        void displayStatus(char choice);
 };
 
 class UI {
     Machine myMachine;
-    string instruction;
+    bool fileOrInstruction;
     public:
-         UI(); // displays menu.
-         bool valid(string instruction); // checks instruction.
-         void getInstruction(); // gets the instruction from the user after checking
+         bool getFileOrInstruction();
+         void displayMenu();
+         void isValid(string input,regex goodInput);
+         string inputFileName();
+         string inputInstruction();
+         char inputChoice();
 };
 
 
