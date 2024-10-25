@@ -42,18 +42,23 @@ class CPU {
         void execute(); // executes the current instruction and increases PC by 2.
 };
 
+
 class Machine{
     Memory machineMemory;
     CPU processor;
     public:
+        bool run();
+        bool valid();
         void loadInstruction();// takes instructions from the user and load it to the memory after making sure it is a valid instruction.
         void process();
+        void displayStatus();
 };
 
-class Main {
-    Machine machine;
+class UI {
     public:
-         void displayMenu(); 
-         void displayStatus();
-         void runProgram();
+    UI(); // displays user class ALU{
+    public:
+        void checkInstruction(string& IR);
 };
+
+

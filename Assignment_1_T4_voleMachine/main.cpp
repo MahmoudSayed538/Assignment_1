@@ -1,7 +1,16 @@
 #include <bits/stdc++.h>
+#include "vole.h"
 using namespace std;
-
 int main()
 {
-    return 0;
-}
+    UI menu;
+    Machine myMachine;
+    for(int i = 0 ; i<16 ; i++)
+    {
+        myMachine.loadInstruction();
+        if(myMachine.run())
+        {
+            break;
+        }
+    }myMachine.process();
+}   
