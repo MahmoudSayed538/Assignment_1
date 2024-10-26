@@ -14,25 +14,38 @@ void Memory::setMemory(const int& address,const string& value)
 
 string Memory::getMemory(const int& address)
 {
-    return mainMemory[address][0]+mainMemory[address][1];
+    int cellX= address/10;
+    int cellY= address-(address%10);
+    return mainMemory[cellX][cellY];
 }
 
 void Memory::setRegister(const int& address,const string& value)
 {
      registers.at(address)=value[0]+value[1];
-     registers.at(address+1)=value[2]+value[3];
+     if(value.length()==4)
+     {
+              registers.at(address+1)=value[2]+value[3];
+     }
 }
 
 string Memory::getRegister(const int& address)
 {
      return registers.at(address)+registers.at(address+1);
 }
-
+    
 //class CU 
 
 void CU::load(char opCode,int registerAdress,int memoryCell,Memory& mainMemory)
 {
     //mahmoud will write code here.
+    if(opCode=='1')
+    {
+        string bitPattern=mainMemory.getMemory(memoryCell);
+        mainMemory.setRegister(registerAdress,bitPattern);
+    }else{
+        string bitPattern=to_string(memoryCell);
+        mainMemory.setRegister(registerAdress,bitPattern);
+    }
 }
 
 void CU::store(int registerAdress,int memoryCell,Memory& mainMemory)
@@ -140,7 +153,6 @@ void Machine::loadInstruction(const string& instruction,int address)
 void Machine::process()
 {
     processor.fetch(machineMemory);
-    processor.decode();
     processor.execute(machineMemory);
 }
 
