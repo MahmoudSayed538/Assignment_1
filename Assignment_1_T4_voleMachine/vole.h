@@ -3,14 +3,20 @@
 #include <string>
 using namespace std;
 
+//helper functions
+
+int fromHexToDec(const string& hex);
+string fromHexToBinary(const string& hex);
+string fromHexToFloat(const string& hex);
+
 class Memory{
     vector<string> registers;
-    vector<vector<string>> mainMemory;
+    vector<string> mainMemory;
     public:
     Memory()
     {
         registers.assign(16,"00");
-        mainMemory.assign(16,vector<string>(16,"00"));
+        mainMemory.assign(256,"00");
     }
     void setMemory(const int& address,const string& value);
     string getMemory(const int& address);
@@ -18,32 +24,30 @@ class Memory{
     string getRegister(const int& address);
 };
 
-class CU{
-    public:
-        void load(char opCode,int registerAdress,int memoryCell,Memory& mainMemory);
-        void store(int registerAdress,int memoryCell,Memory& mainMemory);
-        void move(int registerAdress , int registerAdress2 , Memory& mainMemory);
-        void add(char opCode,int registerAdress,int registerAdress2,int registerAdress3, Memory& mainMemory);
-        void jump(int registerAdress,int memoryCell,Memory& mainMemory);
-        void halt();
-};
-
-class ALU{
-    public:
-        string fromHextoBinary(const string& hex);
-        string fromHextoFloat(const string& hex);
-        int fromHextoInt(const string& hex);
-};
 
 class CPU {
     string IR; // instruction register .
     int PC; // program counter.
-    CU controlUnit;
-    ALU logicalUnit;
     public:
+void set(int step,string instruction)
+        {
+            PC=step;
+            IR=instruction;
+        }
         void fetch(Memory& mainMemory); //fetches the instruction from the memory and assign it to IR
-void decode(int& registerAdress,int& memoryCell); // decodes the instruction in IR.
+        void decode(int& registerAdress,int& memoryCell); // decodes the instruction in IR.
         void execute(Memory& machineMemory); // executes the current instruction and increases PC by 2.
+};
+
+class CU: CPU{
+    public:
+        void load(char opCode,string registerAdress,string memoryCell,Memory& mainMemory);
+        void store(string registerAdress,string memoryCell,Memory& mainMemory);
+        void move(string registerAdress , string registerAdress2 , Memory& mainMemory);
+        void add(char opCode,string registerAdress,string registerAdress2,string registerAdress3, Memory& mainMemory);
+        void jump(string registerAdress,string memoryCell,Memory& mainMemory);
+        void halt();
+
 };
 
 

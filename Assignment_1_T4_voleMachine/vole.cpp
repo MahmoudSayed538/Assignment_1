@@ -4,67 +4,102 @@
 #include <string>
 using namespace std;
 
+
+//helper functions
+int fromHexToDec(const string& hex)
+{
+        int decimalValue = 0;
+    int length = hex.length();
+
+    for (int i = 0; i < length; ++i) {
+        char hexDigit = hex[length - 1 - i];
+        int value;
+
+        if (hexDigit >= '0' && hexDigit <= '9') {
+            value = hexDigit - '0';
+        } else if (hexDigit >= 'A' && hexDigit <= 'F') {
+            value = hexDigit - 'A' + 10;
+        } else if (hexDigit >= 'a' && hexDigit <= 'f') {
+            value = hexDigit - 'a' + 10;
+        } else {
+            std::cerr << "Invalid hexadecimal digit: " << hexDigit << std::endl;
+            return -1;
+        }
+
+        decimalValue += value * std::pow(16, i);
+    }
+
+    return decimalValue;
+}
+
+string fromHexToBinary(const string& hex)
+{
+    
+}
+
+string fromHexToFloat(const string& hex)
+{
+
+}
 //class Memory
 
 void Memory::setMemory(const int& address,const string& value)
 {
-    mainMemory[address][0]=value[0]+value[1];
-    mainMemory[address][1]=value[2]+value[3];
+    mainMemory[address]=value;
 }
 
 string Memory::getMemory(const int& address)
 {
-    int cellX= address/10;
-    int cellY= address-(address%10);
-    return mainMemory[cellX][cellY];
+    return mainMemory[address];
 }
 
 void Memory::setRegister(const int& address,const string& value)
 {
-     registers.at(address)=value[0]+value[1];
-     if(value.length()==4)
-     {
-              registers.at(address+1)=value[2]+value[3];
-     }
+    registers[address]=value;
 }
 
 string Memory::getRegister(const int& address)
 {
-     return registers.at(address)+registers.at(address+1);
+     return registers[address];
 }
     
 //class CU 
 
-void CU::load(char opCode,int registerAdress,int memoryCell,Memory& mainMemory)
+void CU::load(char opCode,string registerAdress,string memoryAddress,Memory& mainMemory)
 {
     //mahmoud will write code here.
+    int memoryCell = fromHexToDec(memoryAddress);
+    int registerCell=fromHexToDec(registerAdress);
     if(opCode=='1')
     {
         string bitPattern=mainMemory.getMemory(memoryCell);
-        mainMemory.setRegister(registerAdress,bitPattern);
+        mainMemory.setRegister(registerCell,bitPattern);
     }else{
         string bitPattern=to_string(memoryCell);
-        mainMemory.setRegister(registerAdress,bitPattern);
+        mainMemory.setRegister(registerCell,bitPattern);
     }
 }
 
-void CU::store(int registerAdress,int memoryCell,Memory& mainMemory)
+void CU::store(string registerAdress,string memoryAddress,Memory& mainMemory)
 {
-    //mahmoud will write code here.
+    int memoryCell= fromHexToDec(memoryAddress);
+    int registerCell = fromHexToDec(registerAdress);
+    string bitPattern=mainMemory.getRegister(registerCell);
+    mainMemory.setMemory(memoryCell,bitPattern);
 }
 
-void CU::move(int registerAdress , int registerAdress2 , Memory& mainMemory)
+void CU::move(string registerAdress , string registerAdress2 , Memory& mainMemory)
 {
     //saif omar will write code here.
 }
 
-void CU::add(char opCode,int registerAdress,int registerAdress2,int registerAdress3, Memory& mainMemory)
+void CU::add(char opCode,string registerAdress,string registerAdress2,string registerAdress3, Memory& mainMemory)
 {
 
     //saif omar will write code here
 }
 
-void CU::jump(int registerAdress,int memoryCell,Memory& mainMemory)
+void CU::jump(string registerAdress,string memoryCell,Memory& mainMemory)
 {
     //hassan momen will write code here.
 }
@@ -74,73 +109,26 @@ void CU::halt()
     //hassan momen will write code here.
 }
 
-//class ALU
+//helper functions
 
-string ALU::fromHextoBinary(const string& hex)
-{
-        //mahmoud will write code here.
-}
 
-string ALU::fromHextoFloat(const string& hex)
-{
-        //saif will write code here.
-}
-
-int ALU::fromHextoInt(const string& hex)
-{
-        // hassan will write code here.
-}
 
 //class CPU
 
 void CPU::fetch(Memory& mainMemory)
 {
-    IR = mainMemory.getMemory(PC);
+    IR = mainMemory.getMemory(PC)+mainMemory.getMemory(PC+1);
 }
 
 void CPU::decode(int& registerAdress,int& memoryCell)
 {
-     char opCode=IR[0];
-      registerAdress=logicalUnit.fromHextoInt(IR.substr(1,1));
-      memoryCell=logicalUnit.fromHextoInt(IR.substr(2,2));
+     
 }
 
 
 void CPU::execute(Memory& machineMemory)
 {
-    int registerAdress;
-    int registerAdress2;
-    int registerAdress3;
-    int memoryCell;
-    switch(IR[0])
-    {
-        case '1':
-            controlUnit.load('1',registerAdress,memoryCell,machineMemory);
-            break;
-        case '2':
-            controlUnit.load('2',registerAdress,memoryCell,machineMemory);
-            break;
-        case '3':
-            controlUnit.store(registerAdress,memoryCell,machineMemory);
-            break;
-        case '4':
-            controlUnit.move(IR[2],IR[3],machineMemory);
-            break;
-        case '5':
-            controlUnit.add('5',registerAdress,registerAdress2,registerAdress3,machineMemory);
-            break;
-        case '6':
-            controlUnit.add('6',registerAdress,registerAdress2,registerAdress3,machineMemory);
-            break;
-        case 'B':
-            controlUnit.jump(registerAdress,memoryCell,machineMemory);
-            break;
-        case 'C':
-            controlUnit.halt();
-            break;
 
-
-    }
 }
 
 //class Machine
