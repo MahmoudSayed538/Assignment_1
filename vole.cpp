@@ -2,14 +2,12 @@
 #include <bits/fs_fwd.h>
 #include <cstddef>
 #include <string>
+#include <cmath>
 using namespace std;
 
-
-
-//helper functions
-int fromHexToDec(const string& hex)
-{
-        int decimalValue = 0;
+// helper functions
+int fromHexToDec(const string& hex) {
+    int decimalValue = 0;
     int length = hex.length();
 
     for (int i = 0; i < length; ++i) {
@@ -23,25 +21,63 @@ int fromHexToDec(const string& hex)
         } else if (hexDigit >= 'a' && hexDigit <= 'f') {
             value = hexDigit - 'a' + 10;
         } else {
-            std::cerr << "Invalid hexadecimal digit: " << hexDigit << std::endl;
+            cerr << "Invalid hexadecimal digit: " << hexDigit << endl;
             return -1;
         }
 
-        decimalValue += value * std::pow(16, i);
+        decimalValue += value * static_cast<int>(pow(16, i));
     }
 
     return decimalValue;
 }
 
-string fromHexToBinary(const string& hex)
-{
+string fromDectoBinary(const int& dec) {
+    if (dec == 0) return "0"; 
+
+    string binary;
+    int num = dec; 
+
+    while (num > 0) {
+        binary = to_string(num % 2) + binary; 
+        num /= 2; 
+    }
     
+    return binary; 
 }
 
-string fromHexToFloat(const string& hex)
-{
-
+int binaryToDecimal(const std::string& binary) {
+    int decimal = 0;
+    for (char bit : binary) {
+        decimal = decimal * 2 + (bit - '0');
+    }
+    return decimal;
 }
+
+double fromHexToFloat( string& hex) {
+    int decimalValue = fromHexToDec(hex);
+    string bin = fromDectoBinary(decimalValue);
+
+    while (bin.length() < 32) {
+        bin = '0' + bin; 
+    }
+
+    int sign = (bin[0] == '1') ? -1 : 1; 
+    int exponent = binaryToDecimal(bin.substr(1, 8)) - 127; 
+    string mantissa = bin.substr(9);
+
+    double mantissaValue = 1.0; 
+    for (int i = 0; i < mantissa.length(); ++i) {
+        if (mantissa[i] == '1') {
+            mantissaValue += pow(2, -(i + 1)); 
+        }
+    }
+
+    double floatValue = sign * mantissaValue * pow(2, exponent);
+
+    return floatValue;
+}
+
+
 //class Memory
 
 void Memory::setMemory(const int& address,const string& value)
@@ -54,19 +90,21 @@ string Memory::getMemory(const int& address)
     return mainMemory[address];
 }
 
-void Memory::setRegister(const int& address,const string& value)
+//class Register
+
+void Register::setRegister(const int& address,const string& value)
 {
-    registers[address]=value;
+    regist[address]=value;
 }
 
-string Memory::getRegister(const int& address)
+string Register::getRegister(const int& address)
 {
-     return registers[address];
+     return regist[address];
 }
     
 //class CU 
 
-void CU::load(char opCode,string registerAdress,string memoryAddress,Memory& mainMemory)
+void CU::load(char opCode,string registerAdress,string memoryAddress,Memory& mainMemory,Register& regist)
 {
     //mahmoud will write code here.
     int memoryCell = fromHexToDec(memoryAddress);
@@ -74,41 +112,41 @@ void CU::load(char opCode,string registerAdress,string memoryAddress,Memory& mai
     if(opCode=='1')
     {
         string bitPattern=mainMemory.getMemory(memoryCell);
-        mainMemory.setRegister(registerCell,bitPattern);
+        regist.setRegister(registerCell,bitPattern);
     }else{
         string bitPattern=to_string(memoryCell);
-        mainMemory.setRegister(registerCell,bitPattern);
+        regist.setRegister(registerCell,bitPattern);
     }
 }
 
-void CU::store(string registerAdress,string memoryAddress,Memory& mainMemory)
+void CU::store(string registerAdress,string memoryAddress,Memory& mainMemory,Register& regist)
 {
     int memoryCell= fromHexToDec(memoryAddress);
     int registerCell = fromHexToDec(registerAdress);
-    string bitPattern=mainMemory.getRegister(registerCell);
+    string bitPattern=regist.getRegister(registerCell);
     mainMemory.setMemory(memoryCell,bitPattern);
 }
 
-void CU::move(string registerAdress , string registerAdress2 , Memory& mainMemory)
+void CU::move(string registerAdress , string registerAdress2 , Memory& mainMemory,Register& regist)
 {
     //saif omar will write code here.
 }
 
-void CU::add(char opCode,string registerAdress,string registerAdress2,string registerAdress3, Memory& mainMemory)
+void CU::add(char opCode,string registerAdress,string registerAdress2,string registerAdress3, Memory& mainMemory,Register& regist)
 {
 
     //saif omar will write code here
 }
 
-void CU::jump(string registerAdress,string memoryCell,Memory& mainMemory)
+void CU::jump(string registerAdress,string memoryCell,Memory& mainMemory,Register& regist)
 {
     //hassan momen will write code here.
     int rcell = fromHexToDec(registerAdress);
     int mcell = fromHexToDec(memoryCell);
 
-    if(mainMemory.getRegister(rcell) == mainMemory.getRegister(0))
+    if(regist.getRegister(rcell) == regist.getRegister(0))
     {
-        PC = stoi(mainMemory.getMemory(mcell));
+        PC = mcell ; 
     }
     else{
         PC = PC+1;
@@ -116,9 +154,56 @@ void CU::jump(string registerAdress,string memoryCell,Memory& mainMemory)
 
 }
 
+void OR(int registerAdress , int registerAdress2 , int registerAdress3, Register& regist)
+{
+string dataF = regist.getRegister(registerAdress);
+string dataS = regist.getRegister(registerAdress2);
+string result ="";
+for (int i = 0; i < dataF.length(); i++) {
+        if(dataF[i] == '1' || dataS[i] == '1') result += '1';
+        else result += '0';
+        
+}
+regist.setRegister(registerAdress3,result);
+
+
+
+}
+
+void AND(int registerAdress , int registerAdress2 , int registerAdress3, Register& regist)
+{
+string dataF = regist.getRegister(registerAdress);
+string dataS = regist.getRegister(registerAdress2);
+string result ="";
+for (int i = 0; i < dataF.length(); i++) {
+        if(dataF[i] == '1' && dataS[i] == '1') result += '1';
+        else result += '0';
+        
+}
+
+regist.setRegister(registerAdress3,result);
+
+}
+
 void CU::halt()
 {
     //hassan momen will write code here.
+    //no need to code any thing, will be handled in gui.
+}
+
+void CU::execute()
+{
+    string instruct;
+    instruct=getIR();
+    switch(instruct[0])
+    {
+        case '1':
+            // will use load.
+        case '2':
+            //will use load also.
+        
+            //continue
+    }
 }
 
 
@@ -155,10 +240,6 @@ void CPU::decode(string &ir)
 }
 
 
-void CPU::execute(Memory& machineMemory)
-{
-
-}
 
 //class Machine
 
@@ -169,43 +250,10 @@ void Machine::loadInstruction(const string& instruction,int address)
 
 void Machine::process()
 {
-    processor.fetch(machineMemory);
-    processor.execute(machineMemory);
+    
 }
 
 void Machine::displayStatus(char choice)
 {
     
-}
-
-//class UI 
-
-void UI::displayMenu()
-{
-
-}
-
-bool UI::getFileOrInstruction()
-{
-
-}
-
-bool UI::isValid(const string& input,regex goodInput)
-{
-
-}
-
-string UI::inputFileName()
-{
-
-}
-
-string UI::inputInstruction()
-{
-
-}
-
-char UI::inputChoice()
-{
-
 }
